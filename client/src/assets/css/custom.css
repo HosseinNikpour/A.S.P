@@ -24,6 +24,7 @@
     font-family: 'iran_sansregular';
     font-size: 28px;
     color: #7100a6;
+    padding-right: 18%;
 }
 .error-control{
     /* background-color: red; */
@@ -146,13 +147,13 @@ nav .nav-link:hover {
 .exit {
     cursor: pointer;
     padding: 4px 15px 4px 15px;
-    background: #f9f9f9;
+    /* background: #f9f9f9; */
     border-radius: 9px;
     margin-top: 4px;
+    font-size: 13px;
 }
 .exit:hover {
-    background: #ff5858;
-    color: white;
+
 }
 
 .btn-primary:hover {
@@ -183,13 +184,50 @@ nav .nav-link:hover {
         }
 
         .ant-dropdown-trigger.ant-dropdown-link  {
-            background-image: url('../img/action.png');
-            width: 41px;
-            position: absolute!important;
+            background-image: url('../img/more.png');
+            width: 75px;
             background-repeat: no-repeat;
-            margin-top: -9px;
             color: #ff000000!important;
+            padding: 0px 10px 0px 10px;
    }
+   
+   .download-list{
+    background-image: url('../img/download.png');
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 183px;
+    width: 102px;
+    height: 56px;
+    margin-top: 21px;
+    background-repeat: no-repeat;
+    background-size: 62px 45px;
+   }
+   .home-page{background: white;}
+   .ant-select:not(.ant-select-customize-input) .ant-select-selector {    margin-top: -6px;}
+.view-item{    background-image: url('../img/view.png');
+    width: 23px;
+    background-repeat: no-repeat;
+    content: "";
+    height: 24px;
+    text-align: center;
+}
+.edit-item{    background-image: url('../img/edit.png');
+    width: 23px;
+    background-repeat: no-repeat;
+    content: "";
+    height: 24px;
+    text-align: center;
+}
+
+
+.delet-item{    background-image: url('../img/delete.png');
+    width: 23px;
+    background-repeat: no-repeat;
+    content: "";
+    height: 24px;
+    text-align: center;
+}
 
    .fa-plus-circle:before {
     color: #51ce08;
@@ -205,11 +243,18 @@ nav .nav-link:hover {
 .offline{    font-style: italic;}
     #footer a {color: #f67a00;
         font-family: 'iran_sansregular';
-        font-size: 17px;}
+        font-size: 17px;
+    padding-right: 18%;}
 .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
     border-color: none;
     box-shadow: none; 
 }
+.logout {
+    width: 14px;
+    margin-left: -8px;
+    padding-top: 6px;
+}
+
 #footer{    color: black;
     text-align: center;
     background: #f5f5f5;
@@ -222,9 +267,59 @@ nav .nav-link:hover {
         height: 48px;
         overflow: hidden;
         border-radius: 5.5rem;
-        border: 1px solid #ccc;
-        margin-left: 17px;
+        border: 1px solid #cccccc63;
+        margin-left: 6px;
     }
+.custom-nav-img{
+    height: 32px;
+    content: "";
+    width: 32px;
+    margin-left: 0px;
+    background-position: right;
+    background-repeat: no-repeat;
+}
+.basicinformation{
+    background-image: url('../img/basicinformation.png');
+    background-size: 24px 24px;
+
+}
+
+.basictable{
+    background-image: url('../img/basictable.png');
+    background-size: 24px 24px;
+    
+    }
+    .permisstion{
+        background-image: url('../img/permisstion.png');
+        background-size: 24px 24px;
+        
+        }
+        .usermanagmenr{
+            background-image: url('../img/usermanagmenr.png');
+            background-size: 24px 24px;
+            
+            }
+            .keywords{
+                background-image: url('../img/keywords.png');
+                background-size: 24px 24px;
+                
+                }        
+            
+    .login-container{background: #fdfdfd;
+        border: solid 1px #e4e4e4;
+        border-radius: 6px;}
+        .login-container .nav-link {    padding-right: 0px!important;}
 .multi_step_form #msform #progressbar li:last-child:after {
     width: 101%;
+}
+.form-control{
+    color:black!important;
+}
+.table{
+    color:black!important;
+}
+.req-label{
+    color:red;
+    font-weight: bold;
+    margin-right: 5px;
 }

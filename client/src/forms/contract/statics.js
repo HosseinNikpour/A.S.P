@@ -53,6 +53,15 @@ export const columns = [
   notInGrid: true,
   },
 
+  {
+    Header: "تاریخ ابلاغ قرارداد",
+    accessor: "date_signiificationgrid",
+    type: "date",
+   
+    notInForm: true,
+  },
+
+
 
   {
     Header: "کدپروژه",
@@ -130,12 +139,12 @@ export const columns = [
     entity: 'baseInfo',
 
   },
-  {
+  /*{
     Header: "تاریخ شروع",
     accessor: "start_date1",
     type: "date",
     notInForm: true,
-  },
+  },*/
   {
     Header: "تاریخ شروع",
     accessor: "start_date",
@@ -150,7 +159,17 @@ export const columns = [
     type: "date",
    notInGrid: true,
     req: true,
+    
   },
+  {
+    Header:"تاریخ خاتمه",
+    accessor: "end_dategrid",
+    type: "date",
+    notInForm: true,
+    //req: true,
+   //render: function (text) { return text&&moment.isMoment(text)?text.format('jYYYY/jMM/jDD') :''}
+  },
+  
   {
     Header: "مدیر پروژه",
     accessor: "project_manager",
@@ -162,10 +181,10 @@ export const columns = [
   {
     Header: "شماره تماس",
     accessor: "phone_manager",
-   notInGrid: true,
-    type: "text",
+    notInGrid:true,
+    type:"calc",
 
-  },
+},
   {
     Header: "کارفرما",
     accessor: "employer",

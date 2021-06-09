@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getItems, insertItem, deleteItem, updateItem, getItem } from '../../api/index';
 import TableContainer from "../../components/TableContainer";
-import { columns, entityName } from './statics';
+import { columns, entityName,pageHeader } from './statics';
 import { message, Select } from 'antd';
 import DatePicker from 'react-datepicker2';
 import Static, { checkPermission } from '../static';
@@ -156,7 +156,7 @@ const Projects = (props) => {
                         </div>
                     </div>
                     <div className='table-responsive'>
-                        <TableContainer columns={columns.filter(a => !a.notInGrid)} data={data}
+                        <TableContainer columns={columns.filter(a => !a.notInGrid)} data={data} downloadName={pageHeader}
                          deleteClick={per.canEdit ? deleteBtnClick : undefined}
                          displayClick={displayBtnClick}
                          editClick={per.canEdit ? editBtnClick : undefined} />
@@ -182,6 +182,7 @@ const Projects = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">نام پروژه</label>
+                                        <label className="req-label"> *</label>
                                         <input className={errors.title ? "form-control error-control" : "form-control"} type="text" value={obj.title}
                                             onChange={(e) => setObj({ ...obj, title: e.target.value })} disabled={mode === 'display'} />
                                     </div>
@@ -189,6 +190,7 @@ const Projects = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">کد پروژه</label>
+                                        <label className="req-label"> *</label>
                                         <input className={errors.project_code ? "form-control error-control" : "form-control"} type="text" value={obj.project_code}
                                             onChange={(e) => setObj({ ...obj, project_code: e.target.value })} disabled={mode === 'display'} />
                                     </div>
@@ -199,7 +201,7 @@ const Projects = (props) => {
                                     <div className="form-group">
                                         <label className="form-control-label">سرپرست کارگاه</label>
                                         <Select className={errors.site_manager_id ? "form-control error-control" : "form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={site_manager_options}
-                                            value={obj.site_manager_id} onSelect={(values) => { setObj({ ...obj, site_manager_id: values }); setCalc({ phonesite: site_manager_options.find(a => a.key === values).psite }) }}
+                                            value={obj.site_manager_id} onSelect={(values) => { setObj({ ...obj, site_manager_id: values }); setCalc({...calc , phonesite: site_manager_options.find(a => a.key === values).psite }) }}
 											
 											
                                         />
@@ -217,8 +219,9 @@ const Projects = (props) => {
                             <div className="col">
 								   <div className="form-group">
                                         <label className="form-control-label">مدیر پروژه</label>
+                                        <label className="req-label"> *</label>
                                         <Select className={errors.project_manager_id ? "form-control error-control" : "form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={project_manager_options}
-                                            value={obj.project_manager_id} onSelect={(values) => { setObj({ ...obj, project_manager_id: values }); setCalc({ phonemanager: project_manager_options.find(a => a.key === values).pmanager }) }}
+                                            value={obj.project_manager_id} onSelect={(values) => { setObj({ ...obj, project_manager_id: values }); setCalc({...calc , phonemanager: project_manager_options.find(a => a.key === values).pmanager }) }}
 											
 											
                                         />
@@ -248,6 +251,7 @@ const Projects = (props) => {
                                 </div></div><div className="row"><div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">پیمانکار</label>
+                                        <label className="req-label"> *</label>
                                         <Select className={errors.contractor_id ? "form-control error-control" : "form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={contractor_options}
                                             value={obj.contractor_id} onSelect={(values) => setObj({ ...obj, contractor_id: values })}
                                         />
@@ -255,6 +259,7 @@ const Projects = (props) => {
                                 </div><div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">مشاور</label>
+                                        <label className="req-label"> *</label>
                                         <Select className={errors.consultant_id ? "form-control error-control" : "form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={consultant_options}
                                             value={obj.consultant_id} onSelect={(values) => setObj({ ...obj, consultant_id: values })}
                                         />
@@ -264,6 +269,7 @@ const Projects = (props) => {
                                 <div className="col-4">
                                     <div className="form-group">
                                         <label className="form-control-label">کارفرما</label>
+                                        <label className="req-label"> *</label>
                                         <Select className={errors.employer_id ? "form-control error-control" : "form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={employer_options}
                                             value={obj.employer_id} onSelect={(values) => setObj({ ...obj, employer_id: values })}
                                         />
@@ -274,7 +280,7 @@ const Projects = (props) => {
 
                             <div className="row">
                                 <div className="col">
-                                    <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>
+                                {mode !== "display" &&  <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>}
                                     <button type="button" className="btn btn-outline-warning" onClick={cancelBtnClick}>انصراف</button>
                                 </div>
                             </div>

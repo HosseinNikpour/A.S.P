@@ -59,7 +59,7 @@ export const columns = [
  {
      Header: "شماره تماس",
      accessor: "phone_manager",
-     notInGrid:true,
+     
      type:"calc",
  
  },

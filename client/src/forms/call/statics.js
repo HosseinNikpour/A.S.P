@@ -25,7 +25,7 @@ export const columns = [
  
 }, 
 {
-   Header: "نام پروژه ",
+   Header: "نام و کد پروژه ",
    accessor: "project_name",
    type:"lookup", 
    entity:'projects', 

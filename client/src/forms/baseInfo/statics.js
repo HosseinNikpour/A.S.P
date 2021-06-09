@@ -37,7 +37,7 @@ export const groups=[{title:'نوع ارتباط با شرکت',value:1},
 {title:'مرجع انتشار',value:10},
 {title:'مدارک تحصیلی',value:11},
 {title:'محل خدمت',value:12},
-{title:'گروه بندی کلید واژه',value:13},
+//{title:'گروه بندی کلید واژه',value:13},
 ];
 export const entityName='baseInfo';
 export const pageHeader='اطلاعات پایه';

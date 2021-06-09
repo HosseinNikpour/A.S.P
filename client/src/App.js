@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link ,useLocation } from "react-router-dom";
+
 import logo from './assets/img/brand/asp.png';
-import profile from './assets/img/brand/asp.png';
+import profile from './assets/img/brand/user.png';
+import logout from './assets/img/brand/logout.png';
 
 import User from './forms/user/index';
 import BaseInfo from './forms/baseInfo/index';
@@ -20,7 +22,7 @@ import CommingSoon from './forms/commingSoon';
 // import Company1 from './forms/company/index3';
 // import Company2 from './forms/company/index2A';
 // import Company3 from './forms/company/index2T';
-import Dashboard from './forms/dashboard/index';
+import MainPage from './forms/mainPage';
 
 import './assets/css/antd.rtl.css';
 import './assets/vendor/nucleo/css/nucleo.rtl.css';
@@ -33,19 +35,27 @@ import PrivateRoute from './components/PrivateRoute'
 import Login from './components/login'
 
 function App() {
+  const [selectedNav,setSelectedNav]= useState(0);
   const [subMenu, setSubMenu] = useState(0);
   const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
     const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : undefined;
-    if (user)
+    if (user){
       setCurrentUser({ name: user.name, lastLoginDate: user.last_login, role_id: user.role_id });
+    }
     else {
 
-      console.log('aaaa');
+     // console.log('aaaa');
     }
    // console.log(currentUser);
   }, [])
+const signOut=()=>{
+  setCurrentUser({});
+  localStorage.clear();
+  window.location.reload();
+ 
+}
   return (
     <div className="App" dir='RTL'>
 
@@ -57,7 +67,9 @@ function App() {
             <div className="sidenav-header align-items-center">
               {/* <input type="button" onClick={(e)=>e.target.classList.contains("")} value="------" /> */}
               <span className="navbar-brand" >
-                <img src={logo} className="navbar-brand-img" alt="..." />
+              <Link to="/" >
+                  <img src={logo} className="navbar-brand-img" alt="..." />
+                  </Link>
               </span>
             </div>
             <div className="navbar-inner">
@@ -69,50 +81,52 @@ function App() {
                  
                   <li className="nav-item" onClick={() => setSubMenu(1)}>
                     <a className="nav-link">
-                      <i className="fas fa-database text-primary"></i>
+                      <i className="custom-nav-img basicinformation"></i>
                       <span className="nav-link-text">اطلاعات پایه</span></a>
                     {subMenu === 1 && <ul className="nav-sub-menu">
-                    <li className="nav-item1">
-                        <Link to="/colleague" className="nav-sub-link">
+                    <li className="nav-item1" onClick={()=>setSelectedNav(1)}>
+                        <Link to="/colleague" className={selectedNav===1?"nav-sub-link selected-nav":"nav-sub-link"}>
                           <span className="nav-link-text1">همکاران</span></Link>
                       </li>
-                      <li className="nav-item1">
-                        <Link to="/organizational" className="nav-sub-link">
+                      <li className="nav-item1" onClick={()=>setSelectedNav(2)}>
+                        <Link to="/organizational" className={selectedNav===2?"nav-sub-link selected-nav":"nav-sub-link"}>
                           <span className="nav-link-text1">سازمانهای همکار</span></Link>
                       </li>
-                      <li className="nav-item1">
-                        <Link to="/projects" className="nav-sub-link">
+                      <li className="nav-item1" onClick={()=>setSelectedNav(3)}>
+                        <Link to="/projects" className={selectedNav===3?"nav-sub-link selected-nav":"nav-sub-link"}>
                           <span className="nav-link-text1">پروژه ها</span></Link>
                       </li>
-                      <li className="nav-item1">
-                        <Link to="/contract" className="nav-sub-link">
+                      <li className="nav-item1" onClick={()=>setSelectedNav(4)}>
+                        <Link to="/contract" className={selectedNav===4?"nav-sub-link selected-nav":"nav-sub-link"}>
                           <span className="nav-link-text1">قراردادها</span></Link>
                       </li>
-                    
-                      <li className="nav-item1">
-                        <Link to="/call" className="nav-sub-link">
-                          <span className="nav-link-text1">فراخوان ها</span></Link>
-                      </li>
-                      <li className="nav-item1">
-                        <Link to="/supplement" className="nav-sub-link">
+                      <li className="nav-item1" onClick={()=>setSelectedNav(5)}>
+                        <Link to="/supplement" className={selectedNav===5?"nav-sub-link selected-nav":"nav-sub-link"}>
                           <span className="nav-link-text1">الحاقیه ها</span></Link>
                       </li>
-                      <li className="nav-item1">
-                        <Link to="/trading_commission" className="nav-sub-link">
+                      <li className="nav-item1" onClick={()=>setSelectedNav(7)}>
+                        <Link to="/trading_commission" className={selectedNav===7?"nav-sub-link selected-nav":"nav-sub-link"}>
                           <span className="nav-link-text1">کمیسیون معاملات  </span></Link>
                       </li>
+                      <li className="nav-item1" onClick={()=>setSelectedNav(6)}>
+                        <Link to="/call" className={selectedNav===6?"nav-sub-link selected-nav":"nav-sub-link"}>
+                          <span className="nav-link-text1">فراخوان ها</span></Link>
+                      </li>
+                      
+                      
                     </ul>}
 
                   </li>
-                  <li className="nav-item">
-                    <Link to="/commingSoon" className="nav-link">
+                  <li className="nav-item" onClick={()=>setSelectedNav(8)}>
+                 
+                    <Link to="/commingSoon" className= {selectedNav===8?"nav-link selected-nav":"nav-link"}>
                       <i className="fa fa-tasks text-primary"></i>
                       <span className="nav-link-text offline">کارتابل پویا</span></Link>
                   </li> 
-                  <li className="nav-item">
-                    <Link to="/commingSoon" className="nav-link">
+                  <li className="nav-item" onClick={()=>setSelectedNav(9)}>
+                    <Link to="/commingSoon" className= {selectedNav===9?"nav-link selected-nav":"nav-link"}>
                       <i className="fas fa-chart-line text-primary"></i>
-                      <span className="nav-link-text">گزارش</span>
+                      <span className="nav-link-text offline">گزارشات</span>
                     </Link>
                   </li>
     
@@ -122,24 +136,24 @@ function App() {
                       <span className="docs-normal">راهبر سامانه</span>
                     </h4>
                   </li>
-                  <li className="nav-item">
-                    <Link to="/user" className="nav-link">
-                      <i className="fas fa-user text-teal"></i>
+                  <li className="nav-item" onClick={()=>setSelectedNav(10)}>
+                    <Link to="/user" className= {selectedNav===10?"nav-link selected-nav":"nav-link"}>
+                      <i className="custom-nav-img usermanagmenr"></i>
                       <span className="nav-link-text">مدیریت کاربران</span></Link>
                   </li>
-                  <li className="nav-item">
-                    <Link to="/permission" className="nav-link">
-                      <i className="fas fa-user text-teal"></i>
+                  <li className="nav-item" onClick={()=>setSelectedNav(11)}>
+                    <Link to="/permission" className= {selectedNav===11?"nav-link selected-nav":"nav-link"}>
+                      <i className="custom-nav-img permisstion"></i>
                       <span className="nav-link-text">مدیریت دسترسی ها</span></Link>
                   </li>
-                  <li className="nav-item">
-                    <Link to="/baseInfo" className="nav-link">
-                      <i className="fas fa-user text-teal"></i>
+                  <li className="nav-item" onClick={()=>setSelectedNav(12)}>
+                    <Link to="/baseInfo" className= {selectedNav===12?"nav-link selected-nav":"nav-link"}>
+                      <i className="custom-nav-img basictable"></i>
                       <span className="nav-link-text">جداول پایه</span></Link>
                   </li>
-                    <li className="nav-item">
-                    <Link to="/keyword" className="nav-link">
-                      <i className="fas fa-user text-teal"></i>
+                    <li className="nav-item" onClick={()=>setSelectedNav(13)}>
+                    <Link to="/keyword" className= {selectedNav===13?"nav-link selected-nav":"nav-link"}>
+                      <i className="custom-nav-img keywords"></i>
                       <span className="nav-link-text">بانک کلید واژه ها</span></Link>
                   </li>ّ
                 </ul>
@@ -155,7 +169,8 @@ function App() {
             <div className="container-fluid">
               <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <div class="head-all" >سامانه اطلاعات مدیریت پروژه (نسخه پایه) </div>
-                <ul className="navbar-nav align-items-center  ml-md-auto ">
+                
+                <ul className="navbar-nav align-items-center  ml-md-auto login-container ">
                   <li className="nav-item dropdown">
                     <span className="nav-link" >
                       <div className='nav-login'>
@@ -174,8 +189,13 @@ function App() {
                     </span>
 
                   </li>
+                  <div onClick={()=>signOut()}>
+                  <img src={logout} className="logout" alt="..." />
+
+                  <span className="exit" >خروج</span>
+                  </div>
                 </ul>
-                <span className="exit" >خروج</span>
+
               </div>
             </div>
           </nav>
@@ -204,7 +224,7 @@ function App() {
               <Route path="/login">
                 <Login />
               </Route>
-              <PrivateRoute path="/" component={Dashboard} />
+              <PrivateRoute path="/" component={MainPage} />
 
             </Switch>
           </div>

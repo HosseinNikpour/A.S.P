@@ -9,10 +9,12 @@ export const columns = [
     {
         Header: "نام و نام خانوادگی",
         accessor: "name",
+        req:true
     },
     {
         Header: "نام کاربری",
         accessor: "username",
+        req:true
     },
     {
         Header: "شماره موبایل ",
@@ -22,6 +24,7 @@ export const columns = [
         Header: "رمز عبور",
         accessor: "password",
         notInGrid:true,
+       // req:true
     },
     {
         Header: "فعال؟",

@@ -9,9 +9,12 @@ router.get(`/`, function (req, res) {
     //             FROM public.${name} as c left join baseinfo as b1 on c.type_id=b1.id 
     //                                      left join baseinfo as b2 on c.rank_id=b2.id
     //             order by c.id desc  `;
-    let query = `SELECT c.* 
-                FROM public.${name} as c 
-                order by c.id desc  `;
+    let query = `SELECT  K.* , CASE WHEN group_id=1 THEN 'سوابق'
+                                    WHEN group_id=2 THEN 'تجربیات'
+                                    WHEN group_id=3 THEN 'تخصص'
+                                ELSE '---' END AS group
+                   FROM public.${name} as k 
+                        order by K.id desc   `;
     pool.query(query).then((results) => {
         return res.send(results.rows);
     })

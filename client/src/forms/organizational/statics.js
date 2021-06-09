@@ -54,7 +54,7 @@ export const columns = [
        Header: "کد اقتصادی",
        accessor: "economic_code",
        type:"text",
-       //notInGrid:true,
+       req:true,
      
    },
    {
@@ -119,7 +119,7 @@ export const columns = [
        type:"lookup", 
        entity:'baseInfo', 
        notInGrid:true, 
-        req:true,		
+      		
    
     },
   {

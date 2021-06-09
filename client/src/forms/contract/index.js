@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getItems, insertItem, deleteItem, updateItem, getItem } from '../../api/index';
 import TableContainer from "../../components/TableContainer";
-import { columns, entityName } from './statics';
+import { columns, entityName, pageHeader } from './statics';
 import { message, Select } from 'antd';
 import DatePicker from 'react-datepicker2';
 import Static, { checkPermission } from '../static';
 import moment from 'moment-jalaali'
-import { Redirect } from "react-router-dom";
+import NumberFormat from 'react-number-format';
 
 const Contract = (props) => {
     const BoxRef = useRef(null), GridRef = useRef(null);;
@@ -45,8 +45,9 @@ const Contract = (props) => {
                         e.date_signiification = e.date_signiification ? moment(e.date_signiification) : undefined;
                         e.date_commission = e.date_commission ? moment(e.date_commission) : undefined;
                         e.start_date = e.start_date ? moment(e.start_date) : undefined;
-                        e.start_date1 = e.start_date && moment.isMoment(e.start_date) ? e.start_date.format('jYYYY/jMM/jDD') : '';
                         e.end_date = e.end_date ? moment(e.end_date) : undefined;
+                        e.end_dategrid = e.end_date && moment.isMoment(e.end_date) ? e.end_date.format('jYYYY/jMM/jDD') : '';
+                        e.date_signiificationgrid = e.date_signiification && moment.isMoment(e.date_signiification) ? e.date_signiification.format('jYYYY/jMM/jDD') : '';
                     });
                     setData(dt);
 
@@ -55,7 +56,7 @@ const Contract = (props) => {
                     setType_tender_options(response[1].data.filter(a => a.groupid === 8).map(a => { return { key: a.id, label: a.title, value: a.id } }));
                     setCommission_members_options(response[5].data.map(a => { return { key: a.id, label: a.title, value: a.id } }));
                     setContract_type_options(response[1].data.filter(a => a.groupid === 5).map(a => { return { key: a.id, label: a.title, value: a.id } }));
-                    setProject_manager_options(response[3].data.map(a => { return { key: a.id, label: a.title, value: a.id } }));
+                    setProject_manager_options(response[3].data.map(a => { return { key: a.id, label: a.name + ' ' + a.last_name, value: a.id, pmanager: a.phone_number } }));
                     setEmployer_options(response[2].data.map(a => { return { key: a.id, label: a.title, value: a.id } }));
                     setContractor_options(response[2].data.map(a => { return { key: a.id, label: a.title, value: a.id } }));
                     setConsultant_options(response[2].data.map(a => { return { key: a.id, label: a.title, value: a.id } }));
@@ -98,7 +99,8 @@ const Contract = (props) => {
         }
 
         else {
-            delete obj.start_date1;
+            delete obj.end_dategrid;
+            delete obj.date_signiificationgrid;
 
             if (mode === 'new') {
                 insertItem(obj, entityName).then(response => {
@@ -187,7 +189,7 @@ const Contract = (props) => {
                         </div>
                     </div>
                     <div className='table-responsive'>
-                        <TableContainer columns={columns.filter(a => !a.notInGrid)} data={data}
+                        <TableContainer columns={columns.filter(a => !a.notInGrid)} data={data} downloadName={pageHeader}
                             deleteClick={per.canEdit ? deleteBtnClick : undefined}
                             displayClick={displayBtnClick}
                             editClick={per.canEdit ? editBtnClick : undefined} />
@@ -213,6 +215,7 @@ const Contract = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">شماره قرارداد</label>
+                                        <label className="req-label"> *</label>
                                         <input className={errors.contract_number ? "form-control error-control" : "form-control"} type="text" value={obj.contract_number}
                                             onChange={(e) => setObj({ ...obj, contract_number: e.target.value })} disabled={mode === 'display'} />
                                     </div>
@@ -220,6 +223,7 @@ const Contract = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">نام قرارداد</label>
+                                        <label className="req-label"> *</label>
                                         <input className={errors.title ? "form-control error-control" : "form-control"} type="text" value={obj.title}
                                             onChange={(e) => setObj({ ...obj, title: e.target.value })} disabled={mode === 'display'} />
                                     </div>
@@ -227,6 +231,7 @@ const Contract = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">موضوع قرارداد</label>
+                                        <label className="req-label"> *</label>
                                         <input className={errors.contract_subject ? "form-control error-control" : "form-control"} type="text" value={obj.contract_subject}
                                             onChange={(e) => setObj({ ...obj, contract_subject: e.target.value })} disabled={mode === 'display'} />
                                     </div>
@@ -237,6 +242,7 @@ const Contract = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">نام پروژه</label>
+                                        <label className="req-label"> *</label>
                                         <Select className={errors.project_id ? "form-control error-control" : "form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={projects_options}
                                             value={obj.project_id} onSelect={(values) => { setObj({ ...obj, project_id: values }); setCalc({ projectCode: projects_options.find(a => a.key === values).code }) }}
                                         />
@@ -268,6 +274,7 @@ const Contract = (props) => {
                                 </div><div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">تاریخ ابلاغ قرارداد</label>
+                                        <label className="req-label"> *</label>
                                         <DatePicker onChange={value => setObj({ ...obj, date_signiification: value })}
                                             value={obj.date_signiification} disabled={mode === 'display'} {...Static.datePickerDefaultProp}
                                             className={errors.date_signiification ? "form-control error-control" : 'form-control'} />
@@ -289,6 +296,7 @@ const Contract = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">تاریخ شروع</label>
+                                        <label className="req-label"> *</label>
                                         <DatePicker onChange={value => setObj({ ...obj, start_date: value })}
                                             value={obj.start_date} disabled={mode === 'display'} {...Static.datePickerDefaultProp}
                                             className={errors.start_date ? "form-control error-control" : 'form-control'} />
@@ -296,6 +304,7 @@ const Contract = (props) => {
                                 </div><div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">تاریخ خاتمه</label>
+                                        <label className="req-label"> *</label>
                                         <DatePicker onChange={value => setObj({ ...obj, end_date: value })}
                                             value={obj.end_date} disabled={mode === 'display'} {...Static.datePickerDefaultProp}
                                             className={errors.end_date ? "form-control error-control" : 'form-control'} />
@@ -313,22 +322,33 @@ const Contract = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">مبلغ اولیه قرارداد</label>
-                                        <input className={errors.initial_amount ? "form-control error-control" : "form-control"} type="number" value={obj.initial_amount}
-                                            onChange={(e) => setObj({ ...obj, initial_amount: e.target.value })} disabled={mode === 'display'} />
+                                        <label className="req-label"> *</label>
+                                        {/* <input className={errors.initial_amount ? "form-control error-control" : "form-control"} type="number" value={obj.initial_amount}
+                                            onChange={(e) => setObj({ ...obj, initial_amount: e.target.value })} disabled={mode === 'display'} /> */}
+                                        <NumberFormat onValueChange={(e) => setObj({ ...obj, initial_amount: e.value })}
+                                            {...Static.numberDefaultProp} disabled={mode === 'display'} value={obj.initial_amount}
+                                            className={errors.initial_amount ? "form-control error-control" : "form-control"}/>
                                     </div>
                                 </div>
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">مبلغ پیش پرداخت</label>
-                                        <input className={errors.prepayment_amount ? "form-control error-control" : "form-control"} type="number" value={obj.prepayment_amount}
-                                            onChange={(e) => setObj({ ...obj, prepayment_amount: e.target.value })} disabled={mode === 'display'} />
+                                        <label className="req-label"> *</label>
+                                        <NumberFormat onValueChange={(e) => setObj({ ...obj, prepayment_amount: e.value })}
+                                            {...Static.numberDefaultProp} disabled={mode === 'display'} value={obj.prepayment_amount}
+                                            className={errors.prepayment_amount ? "form-control error-control" : "form-control"}/>
+                                        {/* <input className={errors.prepayment_amount ? "form-control error-control" : "form-control"} type="number" value={obj.prepayment_amount}
+                                            onChange={(e) => setObj({ ...obj, prepayment_amount: e.target.value })} disabled={mode === 'display'} /> */}
                                     </div>
                                 </div>
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">مبلغ تضمین تعهدات</label>
-                                        <input className={errors.amount_guarantee ? "form-control error-control" : "form-control"} type="number" value={obj.amount_guarantee}
-                                            onChange={(e) => setObj({ ...obj, amount_guarantee: e.target.value })} disabled={mode === 'display'} />
+                                        {/* <input className={errors.amount_guarantee ? "form-control error-control" : "form-control"} type="number" value={obj.amount_guarantee}
+                                            onChange={(e) => setObj({ ...obj, amount_guarantee: e.target.value })} disabled={mode === 'display'} /> */}
+                                             <NumberFormat onValueChange={(e) => setObj({ ...obj, amount_guarantee: e.value })}
+                                            {...Static.numberDefaultProp} disabled={mode === 'display'} value={obj.amount_guarantee}
+                                            className={errors.amount_guarantee ? "form-control error-control" : "form-control"}/>
                                     </div>
                                 </div>
 
@@ -337,6 +357,7 @@ const Contract = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">طرف قرارداد</label>
+                                        <label className="req-label"> *</label>
                                         <Select className={errors.contracting_party_id ? "form-control error-control" : "form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={contracting_party_options}
                                             value={obj.contracting_party_id} onSelect={(values) => setObj({ ...obj, contracting_party_id: values })}
                                         />
@@ -384,18 +405,21 @@ const Contract = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="row"><div className="col">
+                            <div className="row"> <div className="col">
                                 <div className="form-group">
                                     <label className="form-control-label">مدیر پروژه</label>
                                     <Select className={errors.project_manager_id ? "form-control error-control" : "form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={project_manager_options}
-                                        value={obj.project_manager_id} onSelect={(values) => setObj({ ...obj, project_manager_id: values })}
+                                        value={obj.project_manager_id} onSelect={(values) => { setObj({ ...obj, project_manager_id: values }); setCalc({ phonemanager: project_manager_options.find(a => a.key === values).pmanager }) }}
+
+
                                     />
                                 </div>
-                            </div><div className="col">
+                            </div>
+                                <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">شماره تماس</label>
-                                        <input className={errors.phone_manager ? "form-control error-control" : "form-control"} type="text" value={obj.phone_manager}
-                                            onChange={(e) => setObj({ ...obj, phone_manager: e.target.value })} disabled={mode === 'display'} />
+                                        <label className="form-control">{calc.phonemanager}</label>
+
                                     </div>
                                 </div>
                                 <div className="col">
@@ -430,7 +454,7 @@ const Contract = (props) => {
                                 </div></div>
                             <div className="row">
                                 <div className="col">
-                                    <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>
+                                    {mode !== "display" && <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>}
                                     <button type="button" className="btn btn-outline-warning" onClick={cancelBtnClick}>انصراف</button>
                                 </div>
                             </div>

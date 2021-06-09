@@ -8,7 +8,7 @@ export const columns = [
         type:"serial",
     },
     {
-        Header: "کمیسیون منصوب",
+        Header: "عنوان کمیسیون منصوب",
         accessor: "title",
         type:"text",
 		req:true,
@@ -27,7 +27,7 @@ export const columns = [
         accessor: "member_position", 
         type:"lookup", 
         entity:'colleague', 
-        notInGrid:true,
+      
         req: true,
 	 		
     },
@@ -37,7 +37,7 @@ export const columns = [
         accessor: "role", 
         type:"lookup", 
         entity:'baseInfo', 
-        notInGrid:true,
+      
         req: true,
 	 		
     },

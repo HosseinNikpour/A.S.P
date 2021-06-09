@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getItems, insertItem, deleteItem, updateItem, getItem } from '../../api/index';
 import TableContainer from "../../components/TableContainer";
-import { columns, entityName } from './statics';
+import { columns, entityName,pageHeader } from './statics';
 import { message, Select } from 'antd';
 import Static, { checkPermission } from '../static';
 
@@ -19,6 +19,11 @@ const Organizational = (props) => {
     const [areas_options, setAreas_options] = useState([]);
     const [rank_options, setRank_options] = useState([]);
 
+    const getDetailData=(id)=>{
+        getItems(entityName+"/details/"+id).then((response) => {
+            setTableData(response.data);
+        });
+    }
 
     const getData = () => {
         setMode('');
@@ -127,6 +132,7 @@ const Organizational = (props) => {
     }
     const displayBtnClick = (item) => {
         setMode('display');
+        getDetailData(item.id);
         BoxRef.current.scrollIntoView({ behavior: 'smooth' });
         setObj(item);
     }
@@ -134,7 +140,8 @@ const Organizational = (props) => {
         item.relationship_id=item.relationship_id?item.relationship_id:[];
 	    item.area_id=item.area_id?item.area_id:[];
 		item.rank_id=item.rank_id?item.rank_id:[];
-		;
+        getDetailData(item.id);
+		
         setMode('edit');
         BoxRef.current.scrollIntoView({ behavior: 'smooth' });
         setObj(item);
@@ -175,7 +182,7 @@ const Organizational = (props) => {
                         </div>
                     </div>
                     <div className='table-responsive'>
-                        <TableContainer columns={columns.filter(a => !a.notInGrid)} data={data}
+                        <TableContainer columns={columns.filter(a => !a.notInGrid)} data={data} downloadName={pageHeader}
                             deleteClick={per.canEdit ? deleteBtnClick : undefined}
                             displayClick={displayBtnClick}
                             editClick={per.canEdit ? editBtnClick : undefined} />
@@ -200,12 +207,14 @@ const Organizational = (props) => {
                             <div className="row"><div className="col">
                                 <div className="form-group">
                                     <label className="form-control-label">شناسه ملی</label>
+                                    <label className="req-label"> *</label>
                                     <input className={errors.meli_code ? "form-control error-control" : "form-control"} type="text" value={obj.meli_code}
                                         onChange={(e) => setObj({ ...obj, meli_code: e.target.value })} disabled={mode === 'display'} />
                                 </div>
                             </div><div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">کد اقتصادی</label>
+                                        <label className="req-label"> *</label>
                                         <input className={errors.economic_code ? "form-control error-control" : "form-control"} type="text" value={obj.economic_code}
                                             onChange={(e) => setObj({ ...obj, economic_code: e.target.value })} disabled={mode === 'display'} />
                                     </div>
@@ -218,6 +227,7 @@ const Organizational = (props) => {
                                 </div></div><div className="row"><div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">نام سازمان</label>
+                                        <label className="req-label"> *</label>
                                         <input className={errors.title ? "form-control error-control" : "form-control"} type="text" value={obj.title}
                                             onChange={(e) => setObj({ ...obj, title: e.target.value })} disabled={mode === 'display'} />
                                     </div>
@@ -236,6 +246,7 @@ const Organizational = (props) => {
                                 </div></div><div className="row"><div className="col-12">
                                     <div className="form-group">
                                         <label className="form-control-label">آدرس دفتر مرکزی</label>
+                                        <label className="req-label"> *</label>
                                         <input className={errors.address_central ? "form-control error-control" : "form-control"} type="text" value={obj.address_central}
                                             onChange={(e) => setObj({ ...obj, address_central: e.target.value })} disabled={mode === 'display'} />
                                     </div>
@@ -268,6 +279,7 @@ const Organizational = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">تلفن</label>
+                                        <label className="req-label"> *</label>
                                         <input className={errors.tell ? "form-control error-control" : "form-control"} type="text" value={obj.tell}
                                             onChange={(e) => setObj({ ...obj, tell: e.target.value })} disabled={mode === 'display'} />
                                     </div>
@@ -348,7 +360,7 @@ const Organizational = (props) => {
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>
+                                {mode !== "display" &&  <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>}
                                     <button type="button" className="btn btn-outline-warning" onClick={cancelBtnClick}>انصراف</button>
                                 </div>
                             </div>

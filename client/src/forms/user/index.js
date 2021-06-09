@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getItems, insertItem, deleteItem, updateItem } from '../../api/index';
+import { getItems, insertItem, deleteItem, updateItem, updatePassword } from '../../api/index';
 import TableContainer from "../../components/TableContainer";
 import { columns, entityName } from './statics';
 import { message } from 'antd';
@@ -10,6 +10,8 @@ const User = (props) => {
     const [data, setData] = useState([]);
     const [obj, setObj] = useState({});
     const [mode, setMode] = useState('');
+    const [chp, setChp] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const getData = () => {
         setMode('');
@@ -17,7 +19,7 @@ const User = (props) => {
         getItems(entityName).then((response) => {
             setData(response.data);
             setObj({});
-          //  setErrors({});
+            setErrors({});
         })
     }
     useEffect(() => {
@@ -30,38 +32,74 @@ const User = (props) => {
         BoxRef.current.scrollIntoView({ behavior: 'smooth' });
     }
     const saveBtnClick = () => {
-        if (mode === 'new') {
-            insertItem(obj, entityName).then(response => {
-                if (response.data.type !== "Error") {
-                     message.success('آیتم با موفقیت ذخیره شد');
-                    //alert('آیتم با موفقیت ذخیره شد');
-                    getData();
-                }
-                else{
-                    //alert('خطا در ذخیره سازی اطلاعات');
-                    message.error('خطا در ذخیره سازی اطلاعات', 3000);
-                    console.log(response.data.message);
-                }
+        let err = {};
+        columns.filter(a => a.req).forEach(a => {
+            if (a.type === 'lookup')
+                err[a.accessor + "_id"] = obj[a.accessor + "_id"] ? false : true;
+            else
+                err[a.accessor] = obj[a.accessor] ? false : true;
+        })
 
-            }).catch((error) => {
-                message.error('بروز خطا در سیستم', 3000);
-                console.log(error)});
+
+        if (Object.values(err).filter(a => a).length > 0) {
+            setErrors(err);
+            BoxRef.current.scrollIntoView({ behavior: 'smooth' });
+            alert("لطفا موارد الزامی را وارد کنید");
         }
-        else if (mode === 'edit') {
-            updateItem(obj, entityName).then(response => {
-                if (response.data.type !== "Error") {
-                    message.success('آیتم با موفقیت ذخیره شد');
-                    //alert('آیتم با موفقیت ذخیره شد');
-                    getData();
-                }
-                else{
-                   // alert('خطا در ذخیره سازی اطلاعات');
-                    message.error('خطا در ذخیره سازی اطلاعات', 3000);
-                    console.log(response.data.message);
-                }
-            }).catch((error) =>{
-                message.error('بروز خطا در سیستم', 3000);
-                console.log(error)});
+
+        else {
+            if (mode === 'new') {
+                insertItem(obj, entityName).then(response => {
+                    if (response.data.type !== "Error") {
+                        message.success('آیتم با موفقیت ذخیره شد');
+                        //alert('آیتم با موفقیت ذخیره شد');
+                        getData();
+                    }
+                    else {
+                        //alert('خطا در ذخیره سازی اطلاعات');
+                        message.error('خطا در ذخیره سازی اطلاعات', 3000);
+                        console.log(response.data.message);
+                    }
+
+                }).catch((error) => {
+                    message.error('بروز خطا در سیستم', 3000);
+                    console.log(error)
+                });
+            }
+            else if (mode === 'edit') {
+                updateItem(obj, entityName).then(response => {
+                    if (response.data.type !== "Error") {
+                        message.success('آیتم با موفقیت ذخیره شد');
+                        //alert('آیتم با موفقیت ذخیره شد');
+                        getData();
+                    }
+                    else {
+                        // alert('خطا در ذخیره سازی اطلاعات');
+                        message.error('خطا در ذخیره سازی اطلاعات', 3000);
+                        console.log(response.data.message);
+                    }
+                }).catch((error) => {
+                    message.error('بروز خطا در سیستم', 3000);
+                    console.log(error)
+                });
+            }
+            else if (chp) {
+                updatePassword({ id: obj.id, password: obj.password }).then(response => {
+                    if (response.data.type !== "Error") {
+                        message.success('رمز عبور با موفقیت تغییر کرد');
+                        //alert('آیتم با موفقیت ذخیره شد');
+                        getData();
+                    }
+                    else {
+                        // alert('خطا در ذخیره سازی اطلاعات');
+                        message.error('خطا در ذخیره سازی اطلاعات', 3000);
+                        console.log(response.data.message);
+                    }
+                }).catch((error) => {
+                    message.error('بروز خطا در سیستم', 3000);
+                    console.log(error)
+                });
+            }
         }
     }
     const deleteBtnClick = (item) => {
@@ -84,7 +122,7 @@ const User = (props) => {
     const cancelBtnClick = () => {
         setMode('');
         GridRef.current.scrollIntoView({ behavior: 'smooth' });
-       
+
     }
     return (<div className="container-fluid">
         <div className="row" style={{ paddingTop: '15px' }}>
@@ -105,7 +143,7 @@ const User = (props) => {
                         </div>
                     </div>
                     <div className='table-responsive'>
-                        <TableContainer columns={columns.filter(a=>!a.notInGrid)} data={data}
+                        <TableContainer columns={columns.filter(a => !a.notInGrid)} data={data}
                             deleteClick={deleteBtnClick}
                             displayClick={displayBtnClick}
                             editClick={editBtnClick} />
@@ -121,7 +159,7 @@ const User = (props) => {
                         <div className="row align-items-center">
                             <div className="col">
                                 <h3 className="mb-0">
-                                {mode === 'new' ? 'اضافه کردن آیتم جدید' : mode === 'edit' ? 'ویرایش آیتم' : 'مشاهده آیتم'}
+                                    {mode === 'new' ? 'اضافه کردن آیتم جدید' : mode === 'edit' ? 'ویرایش آیتم' : 'مشاهده آیتم'}
                                 </h3>
                                 <hr></hr>
                             </div>
@@ -133,45 +171,55 @@ const User = (props) => {
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">نام و نام خانوادگی</label>
-                                        <input className="form-control" type="text" value={obj.name} 
-                                        onChange={(e) => setObj({ ...obj, name: e.target.value })} disabled={mode === 'display'} />
+                                        <label className="req-label"> *</label>
+                                        <input className={errors.name ? "form-control error-control" : "form-control"} type="text" value={obj.name}
+                                            onChange={(e) => setObj({ ...obj, name: e.target.value })} disabled={mode === 'display'} />
                                     </div>
                                 </div>
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">نام کاربری</label>
-                                        <input className="form-control" type="text" value={obj.username} 
-                                        onChange={(e) => setObj({ ...obj, username: e.target.value })} disabled={mode === 'display'}/>
+                                        <label className="req-label"> *</label>
+                                        <input className={errors.username ? "form-control error-control" : "form-control"} type="text" value={obj.username}
+                                            onChange={(e) => setObj({ ...obj, username: e.target.value })} disabled={mode === 'display'} />
                                     </div>
                                 </div>
                                 <div className="col">
                                     <div className="form-group">
                                         <label className="form-control-label">شماره موبایل </label>
-                                        <input className="form-control" type="text" value={obj.phone} 
-                                        onChange={(e) => setObj({ ...obj, phone: e.target.value })} disabled={mode === 'display'}/>
+                                        <input className="form-control" type="text" value={obj.phone} maxlength="10"
+                                            onChange={(e) => setObj({ ...obj, phone: e.target.value })} disabled={mode === 'display'} />
                                     </div>
                                 </div>
 
                             </div>
                             <div className="row">
-                            {mode === 'new' && <div className="col-4">
-                                 <div className="form-group">
+                                <div className="col">
+                                    {mode === 'display' && <div className="form-group">
+                                        <label className="form-control-label">تغیر رمز عبور؟</label>
+                                        <input className="form-control1" type="checkbox" checked={chp}
+                                            onChange={(e) => setChp(!chp)} />
+                                    </div>}
+                                </div>
+                                {(mode === 'new' || chp) && <div className="col-4">
+                                    <div className="form-group">
                                         <label className="form-control-label">رمز عبور</label>
-                                        <input className="form-control" type="text" value={obj.password} 
-                                        onChange={(e) => setObj({ ...obj, password: e.target.value })} disabled={mode === 'display'}/>
+                                        {/* <label className="req-label"> *</label> */}
+                                        <input className="form-control" type="text" value={obj.password}
+                                            onChange={(e) => setObj({ ...obj, password: e.target.value })} disabled={mode === 'display' && !chp} />
                                     </div>
                                 </div>}
                                 <div className="col">
                                     {mode !== 'new' && <div className="form-group">
                                         <label className="form-control-label">فعال؟</label>
-                                        <input className="form-control1" type="checkbox" checked={obj.enabled} 
-                                        onChange={(e) => setObj({ ...obj, enabled: !obj.enabled })} disabled={mode === 'display'}/>
+                                        <input className="form-control1" type="checkbox" checked={obj.enabled}
+                                            onChange={(e) => setObj({ ...obj, enabled: !obj.enabled })} disabled={mode === 'display'} />
                                     </div>}
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    {mode!=="display" &&<button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>}
+                                    {(mode !== "display" || chp) && <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>}
                                     <button type="button" className="btn btn-outline-warning" onClick={cancelBtnClick}>انصراف</button>
                                 </div>
                             </div>

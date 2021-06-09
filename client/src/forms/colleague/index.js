@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getItems, insertItem, deleteItem, updateItem, getItem } from '../../api/index';
 import TableContainer from "../../components/TableContainer";
-import {columns,entityName} from './statics';
+import {columns,entityName,pageHeader} from './statics';
 import { message,Select } from 'antd';
 //import DatePicker from 'react-datepicker2';
 import Static, { checkPermission } from '../static';
@@ -31,9 +31,9 @@ import Static, { checkPermission } from '../static';
                 setPer(cp);
 
             setData(response[0].data);
-            setRecord_options(response[1].data.map(a => { return { key: a.id, label: a.title, value: a.id } }));
-            setExperience_options(response[1].data.map(a => { return { key: a.id, label: a.title, value: a.id } }));
-            setSpecialty_options(response[1].data.map(a => { return { key: a.id, label: a.title, value: a.id } }));
+            setRecord_options(response[1].data.filter(a=>a.group_id===1).map(a => { return { key: a.id, label: a.title, value: a.id } }));
+            setExperience_options(response[1].data.filter(a=>a.group_id===2).map(a => { return { key: a.id, label: a.title, value: a.id } }));
+            setSpecialty_options(response[1].data.filter(a=>a.group_id===3).map(a => { return { key: a.id, label: a.title, value: a.id } }));
             setOrganization_level_options(response[2].data.filter(a => a.groupid === 2).map(a => { return { key: a.id, label: a.title, value: a.id } }));      
             setLast_educational_options(response[2].data.filter(a => a.groupid === 11).map(a => { return { key: a.id, label: a.title, value: a.id } }));  
       
@@ -160,7 +160,7 @@ import Static, { checkPermission } from '../static';
                 </div>
             </div>
             <div className='table-responsive'>
-                <TableContainer columns={columns.filter(a=>!a.notInGrid)} data={data} 
+                <TableContainer columns={columns.filter(a=>!a.notInGrid)} data={data} downloadName={pageHeader}
                       deleteClick={per.canEdit ? deleteBtnClick : undefined}
                       displayClick={displayBtnClick}
                       editClick={per.canEdit ? editBtnClick : undefined} />           
@@ -185,8 +185,9 @@ import Static, { checkPermission } from '../static';
                     <div className="row"><div className="col">
                 <div className="form-group">
                     <label className="form-control-label">کد ملی</label>
+                    <label className="req-label"> *</label>
                       <input className={errors.title?"form-control error-control":"form-control"} type="text" value={obj.title} 
-                onChange={(e) => setObj({ ...obj, title: e.target.value })} disabled={mode === 'display'} />
+                onChange={(e) => setObj({ ...obj, title: e.target.value })} disabled={mode === 'display'} maxlength="10" />
                 </div>
             </div><div className="col">
                 <div className="form-group">
@@ -203,12 +204,14 @@ import Static, { checkPermission } from '../static';
             </div></div><div className="row"><div className="col">
                 <div className="form-group">
                     <label className="form-control-label">نام</label>
+                    <label className="req-label"> *</label>
                       <input className={errors.name?"form-control error-control":"form-control"} type="text" value={obj.name} 
                 onChange={(e) => setObj({ ...obj, name: e.target.value })} disabled={mode === 'display'} />
                 </div>
             </div><div className="col">
                 <div className="form-group">
                     <label className="form-control-label">نام خانوادگی</label>
+                    <label className="req-label"> *</label>
                       <input className={errors.last_name?"form-control error-control":"form-control"} type="text" value={obj.last_name} 
                 onChange={(e) => setObj({ ...obj, last_name: e.target.value })} disabled={mode === 'display'} />
                 </div>
@@ -227,8 +230,9 @@ import Static, { checkPermission } from '../static';
             </div><div className="col">
                 <div className="form-group">
                     <label className="form-control-label">شماره موبایل</label>
+                    <label className="req-label"> *</label>
                       <input className={errors.phone_number?"form-control error-control":"form-control"} type="text" value={obj.phone_number} 
-                onChange={(e) => setObj({ ...obj, phone_number: e.target.value })} disabled={mode === 'display'} />
+                onChange={(e) => setObj({ ...obj, phone_number: e.target.value })} disabled={mode === 'display'} maxlength="10"/>
                 </div>
             </div><div className="col">
                 <div className="form-group">
@@ -264,6 +268,7 @@ import Static, { checkPermission } from '../static';
             <div className="col">
                 <div className="form-group">
                     <label className="form-control-label">محل خدمت</label>
+                    <label className="req-label"> *</label>
                     <Select className={errors.service_location_id?"form-control error-control":"form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={service_location_options}
              mode="multiple" value={obj.service_location_id} onChange={(values) =>   setObj({ ...obj, service_location_id: values})}
             />
@@ -307,7 +312,7 @@ import Static, { checkPermission } from '../static';
             </div></div>
                     <div className="row">
                         <div className="col">
-                            <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>
+                        {mode !== "display" &&<button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>}
                             <button type="button" className="btn btn-outline-warning" onClick={cancelBtnClick}>انصراف</button>
                         </div>
                     </div>

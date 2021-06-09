@@ -112,7 +112,7 @@ router.post('/verifyToken', function (req, res) {
     });
 });
 router.get(`/`, function (req, res) {
-    let query = `SELECT u.id, u.username, u.name, u.last_login,u.enabled,u.role
+    let query = `SELECT u.id, u.username, u.name, u.last_login,u.enabled,u.role,u.phone
             FROM public.${name} as u
             order by id desc  `;
 
@@ -132,8 +132,8 @@ router.post('/', function (req, res) {
         bcrypt.hash(req.body.password, salt, function (err, hash) {
           //  let query = `INSERT INTO public.${name} (username, name, password,enabled,role,creator_id, create_date)  
           //  Values('${req.body.username}','${req.body.name}','${hash}',true,'user',${req.body.creator_id},'${req.body.create_date}')`;
-            let query = `INSERT INTO public.${name} (username, name, password,enabled,role)  
-                         Values('${req.body.username}','${req.body.name}','${hash}',true,'user')`;
+            let query = `INSERT INTO public.${name} (username, name, password,enabled,role,phone)  
+                         Values('${req.body.username}','${req.body.name}','${hash}',true,'user','${req.body.phone}')`;
             console.log(query);
             pool.query(query)
                 .then((results) => {
@@ -169,7 +169,8 @@ router.put('/:id', function (req, res) {
   //  console.log('in update')
     let query = `UPDATE public.${name}
             SET name='${req.body.name}',
-                username='${req.body.username}',               
+                username='${req.body.username}',      
+                phone='${req.body.phone}',            
                 enabled=${req.body.enabled},
                 editor_id=${req.body.editor_id}, 
                 edit_date='${req.body.edit_date}'

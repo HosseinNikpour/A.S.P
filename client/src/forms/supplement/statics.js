@@ -24,6 +24,8 @@ export const columns = [
       accessor: "title",
       type:"text",
       req:true,
+      notInGrid:true,
+   
     },
 
    
@@ -33,10 +35,6 @@ export const columns = [
       type:"number",
       req:true,
    }, 
-   
-  
-   
- 
 
 
    {

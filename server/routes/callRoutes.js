@@ -9,10 +9,11 @@ router.get(`/`, function (req, res) {
     //             FROM public.${name} as c left join baseinfo as b1 on c.type_id=b1.id 
     //                                      left join baseinfo as b2 on c.rank_id=b2.id
     //             order by c.id desc  `;
-    let query = `    SELECT c.* ,p.title as type, p.project_code ,
+    let query = `    SELECT c.* ,p.title as type, p.project_code ,o.title as winning_company,
                      p.title ||' _ '|| p.project_code as project_name
-                      FROM public.${name} as c left join projects as p on c.project_name_id=p.id 
-                        order by c.id desc  `;
+                     FROM public.${name} as c left join projects as p on c.project_name_id=p.id
+                                              left join organizational as o on c.winning_company_id=o.id
+                                             order by c.id desc  `;
     pool.query(query).then((results) => {
         return res.send(results.rows);
     })

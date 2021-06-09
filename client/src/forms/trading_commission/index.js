@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getItems, insertItem, deleteItem, updateItem, getItem } from '../../api/index';
 import TableContainer from "../../components/TableContainer";
-import {columns,entityName} from './statics';
+import {columns,entityName,pageHeader} from './statics';
 import { message,Select } from 'antd';
 import DatePicker from 'react-datepicker2';
 import Static, { checkPermission } from '../static';
@@ -54,12 +54,13 @@ import moment from 'moment-jalaali'
     }
     const saveBtnClick = () => {
 
+       
         let err = {};
         columns.filter(a => a.req).forEach(a => {
-            if (a.type === 'lookup')
-                err[a.accessor + "_id"] = obj[a.accessor + "_id"] ? false : true;
+            if(a.type==='lookup')
+            err[a.accessor+"_id"] = obj[a.accessor+"_id"] ? false : true;
             else
-                err[a.accessor] = obj[a.accessor] ? false : true;
+            err[a.accessor] = obj[a.accessor] ? false : true;
         })
 
 
@@ -156,7 +157,7 @@ import moment from 'moment-jalaali'
                 </div>
             </div>
             <div className='table-responsive'>
-                <TableContainer columns={columns.filter(a=>!a.notInGrid)} data={data} 
+                <TableContainer columns={columns.filter(a=>!a.notInGrid)} data={data} downloadName={pageHeader}
                    deleteClick={per.canEdit ? deleteBtnClick : undefined}
                    displayClick={displayBtnClick}
                    editClick={per.canEdit ? editBtnClick : undefined} />             
@@ -183,7 +184,8 @@ import moment from 'moment-jalaali'
                     <div className="row">
                                <div className="col">
                            <div className="form-group">
-                               <label className="form-control-label">کمیسیون منصوب</label>
+                               <label className="form-control-label">عنوان کمیسیون منصوب</label>
+                               <label className="req-label"> *</label>
                                  <input className={errors.title?"form-control error-control":"form-control"} type="text" value={obj.title} 
                            onChange={(e) => setObj({ ...obj, title: e.target.value })} disabled={mode === 'display'} />
                            </div>
@@ -192,6 +194,7 @@ import moment from 'moment-jalaali'
                        <div className="col">
                       <div className="form-group">
                     <label className="form-control-label">تاریخ ابلاغ احکام</label>
+                    <label className="req-label"> *</label>
                     <DatePicker onChange={value =>  setObj({ ...obj, rule_date: value})}
                        value={obj.rule_date} disabled={mode === 'display'} {...Static.datePickerDefaultProp}
                            className={errors.rule_date ? "form-control error-control" : 'form-control'} />
@@ -200,21 +203,23 @@ import moment from 'moment-jalaali'
                         <div className="col">
                            <div className="form-group">
                                <label className="form-control-label">عضو</label>
+                               <label className="req-label"> *</label>
                                <Select className={errors.member_position_id?"form-control error-control":"form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={member_position_options}
-                           value={obj.member_position_id} onSelect={(values) =>  setObj({ ...obj, member_position_id: values})}/>
+                           value={obj.member_position_id} mode="multiple" onChange={(values) =>  setObj({ ...obj, member_position_id: values})}/>
                            </div>
                        </div>
                         </div>
                         <div className="col-4">
                            <div className="form-group">
                                <label className="form-control-label">سمت</label>
+                               <label className="req-label"> *</label>
                                <Select className={errors.role_id ?"form-control error-control":"form-control"} {...Static.selectDefaultProp} disabled={mode === 'display'} options={role_options}
-                           value={obj.role_id} onSelect={(values) =>  setObj({ ...obj, role_id: values})}/>
+                           value={obj.role_id} mode="multiple" onChange={(values) =>  setObj({ ...obj, role_id: values})}/>
                            </div>
                        </div>
                         <div className="row">
                         <div className="col">
-                            <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>
+                        {mode !== "display" && <button type="button" className="btn btn-outline-primary" onClick={saveBtnClick}>ذخیره</button>}
                             <button type="button" className="btn btn-outline-warning" onClick={cancelBtnClick}>انصراف</button>
                         </div>
                     </div>
